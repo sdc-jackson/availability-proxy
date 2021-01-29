@@ -6,7 +6,7 @@ module.exports = {
   entry: path.resolve(__dirname, 'client', 'src', 'index.js'),
   output: {
     filename: `bundle_${Date.now()}.js`,
-    path: './public'
+    path: path.resolve(__dirname, 'public')
   },
   module: {
     rules: [
@@ -20,5 +20,8 @@ module.exports = {
       }
     ]
   },
-  plugins: [new HtmlWebpackPlugin({ template: path.resolve(__dirname, 'client', 'src', 'index.html')})]
+  plugins: [new HtmlWebpackPlugin({ template: path.resolve(__dirname, 'client', 'src', 'index.html')})],
+  resolve: {
+    extensions: ['.js', '.jsx']
+  }
 };
