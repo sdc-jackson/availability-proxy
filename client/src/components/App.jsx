@@ -13,14 +13,16 @@ const App = () => {
     renderService('/photos');
     renderService('/availability');
     renderService('/users');
+    renderService('/places');
   });
 
   return (
     <div>
-      <div id='photos'></div>
+      <div id='main'></div>
       <div id='availabilityApp1'></div>
       <div id='availabilityApp2'></div>
       <div id='users'></div>
+      <div id='places'></div>
     </div>
   );
 };
