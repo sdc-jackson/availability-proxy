@@ -9,7 +9,8 @@
   },
   "scripts": {
     "start": "nodemon server/server.js",
-    "build": "webpack -w"
+    "build": "NODE_ENV=production webpack",
+    "client-dev": "NODE_ENV=development webpack -w"
   },
   "dependencies": {
     "axios": "^0.21.1",
