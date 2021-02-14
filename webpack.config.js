@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  mode: process.env.NODE_ENV !== 'production' ? 'development' : 'production',
+  mode: 'production',
   entry: path.resolve(__dirname, 'client', 'src', 'index.js'),
   output: {
     filename: `bundle_${Date.now()}.js`,
@@ -17,11 +17,15 @@ module.exports = {
       {
         test: /\.css/,
         use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.(eot|woff|woff2|svg|ttf)([\?]?.*)$/,
+        loader: 'file-loader'
       }
     ]
   },
   plugins: [new HtmlWebpackPlugin({ template: path.resolve(__dirname, 'client', 'src', 'index.html')})],
   resolve: {
-    extensions: ['.js', '.jsx']
+    extensions: ['.js', '.jsx', '.css']
   }
 };
