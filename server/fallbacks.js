@@ -190,6 +190,17 @@ const nightlyRate = {
   'minNightlyRate': 203
 };
 
+const summary = {
+  '__v': 0,
+  'stayId': 101,
+  'typeOfStay': 'Private room',
+  'numGuests': 1,
+  'numBaths': 1,
+  'numBeds': 1,
+  'numBedrooms': 4,
+  '_id': '602c68795e4c664eb4dfe343'
+};
+
 module.exports = {
   calendar,
   user,
