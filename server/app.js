@@ -8,6 +8,22 @@ const fallback = require('./fallbacks.js');
 app.use('/', express.static('public'));
 app.use('/rooms/:id', express.static('public'));
 
+app.get('/header', async (req, res) => {
+  try {
+    const response = await axios.get('https://fec-gnocchi-user-profile.s3-us-west-2.amazonaws.com/header.js');
+    res.send(response.data);
+  } catch (err) {
+    console.error(err);
+  }
+});
+app.get('/footer', async (req, res) => {
+  try {
+    const response = await axios.get('https://footer-bundle.s3-us-west-2.amazonaws.com/footer.js');
+    res.send(response.data);
+  } catch (err) {
+    console.error(err);
+  }
+});
 app.get('/availability', async (req, res) => {
   try {
     const response = await axios.get('https://availability-bundle.s3-us-west-2.amazonaws.com/bundle_availability.js');
@@ -71,6 +87,23 @@ app.get('/places/:id', async (req, res) => {
   }
 });
 
+app.get('/summary', async (req, res) => {
+  try {
+    const response = await axios.get('https://summarybundle-mockairbnb.s3-us-west-2.amazonaws.com/summary.js');
+    res.send(response.data);
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+app.get('/rooms/:id/summary', async (req, res) => {
+  try {
+    const response = await axios.get(`http://ec2-54-149-117-186.us-west-2.compute.amazonaws.com:5002/rooms/${req.params.id}/summary`);
+    res.send(response.data);
+  } catch (err) {
+    res.send(fallback.summary);
+  }
+});
 
 app.get('/users', async (req, res) => {
   try {
