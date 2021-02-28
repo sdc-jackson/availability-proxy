@@ -201,10 +201,24 @@ const summary = {
   '_id': '602c68795e4c664eb4dfe343'
 };
 
+const title = [
+  {
+    '_id': '6037f8ea3ba07710ec1a71c4',
+    'roomId': '101',
+    'titleName': 'Rustic Rubber Fish',
+    'isSaved': false,
+    'location': '74088 Schmitt Lights',
+    'reviewScore': 1,
+    '__v': 0
+  }
+];
+
 module.exports = {
   calendar,
   user,
   places,
   photos,
-  nightlyRate
+  nightlyRate,
+  summary,
+  title
 };

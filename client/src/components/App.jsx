@@ -11,6 +11,7 @@ const App = () => {
 
   useEffect(() => {
     renderService('/header');
+    renderService('/title');
     renderService('/photos');
     renderService('/summary');
     renderService('/availability');
@@ -22,6 +23,7 @@ const App = () => {
   return (
     <div>
       <div id='header'></div>
+      <div id='title-bar'></div>
       <div id='main'></div>
       <div id='summaryBar'></div>
       <div id='availabilityApp1'></div>
