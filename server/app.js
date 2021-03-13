@@ -12,7 +12,7 @@ app.use('/rooms/:id', express.static('public'));
 
 app.get('/header', async (req, res) => {
   try {
-    const response = await axios.get('https://fec-gnocchi-user-profile.s3-us-west-2.amazonaws.com/header.js');
+    const response = await axios.get('https://fec-gnocchi-user-profile.s3-us-west-2.amazonaws.com/header.js.gz');
     res.send(response.data);
   } catch (err) {
     console.error(err);
@@ -66,7 +66,7 @@ app.get('/users', async (req, res) => {
 
 app.get('/places', async (req, res) => {
   try {
-    const response = await axios.get('https://fec-gnocchi-user-profile.s3-us-west-2.amazonaws.com/places.js');
+    const response = await axios.get('https://fec-gnocchi-user-profile.s3-us-west-2.amazonaws.com/places.js.gz');
     res.send(response.data);
   } catch (err) {
     console.error(err);
