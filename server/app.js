@@ -94,7 +94,6 @@ app.get('/rooms/:id/availableDates', async (req, res) => {
   }
 });
 app.post('/rooms/:id/reservations', async (req, res) => {
-  console.log(req.body)
   try {
     const response = await axios.post(`http://localhost:5001/rooms/${req.params.id}/reservations`, req.body);
     res.send(response.data);

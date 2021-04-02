@@ -26,4 +26,5 @@ dist/
 public/
 
 .env
+newrelic.js
 
