@@ -10,14 +10,14 @@ const App = () => {
   };
 
   useEffect(() => {
-    renderService('/header');
-    renderService('/title');
-    renderService('/photos');
-    renderService('/summary');
+    //renderService('/header');
+    //renderService('/title');
+    //renderService('/photos');
+    //renderService('/summary');
     renderService('/availability');
-    renderService('/users');
-    renderService('/places');
-    renderService('/footer');
+    //renderService('/users');
+    //renderService('/places');
+    //renderService('/footer');
   });
 
   return (

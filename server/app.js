@@ -7,7 +7,8 @@ const fallback = require('./fallbacks.js');
 
 app.use('/', express.static('public'));
 app.use('/rooms/:id', express.static('public'));
-
+app.use(express.urlencoded({extended: true}));
+app.use(express.json());
 //***********/ RETRIEVE BUNDLES /***********//
 
 app.get('/header', async (req, res) => {
@@ -48,7 +49,7 @@ app.get('/summary', async (req, res) => {
 
 app.get('/availability', async (req, res) => {
   try {
-    const response = await axios.get('https://availability-bundle.s3-us-west-2.amazonaws.com/bundle_availability.js');
+    const response = await axios.get('http://localhost:5001/bundle_availability.js');
     res.send(response.data);
   } catch (err) {
     console.error(err);
@@ -86,7 +87,16 @@ app.get('/footer', async (req, res) => {
 
 app.get('/rooms/:id/availableDates', async (req, res) => {
   try {
-    const response = await axios.get(`http://ec2-54-149-117-186.us-west-2.compute.amazonaws.com:5001/rooms/${req.params.id}/availableDates`);
+    const response = await axios.get(`http://localhost:5001/rooms/${req.params.id}/availableDates`);
+    res.send(response.data);
+  } catch (err) {
+    res.send(fallback.calendar);
+  }
+});
+app.post('/rooms/:id/reservations', async (req, res) => {
+  console.log(req.body)
+  try {
+    const response = await axios.post(`http://localhost:5001/rooms/${req.params.id}/reservations`, req.body);
     res.send(response.data);
   } catch (err) {
     res.send(fallback.calendar);
@@ -95,7 +105,7 @@ app.get('/rooms/:id/availableDates', async (req, res) => {
 
 app.get('/rooms/:id/minNightlyRate', async (req, res) => {
   try {
-    const response = await axios.get(`http://ec2-54-149-117-186.us-west-2.compute.amazonaws.com:5001/rooms/${req.params.id}/minNightlyRate`);
+    const response = await axios.get(`http://localhost:5001/rooms/${req.params.id}/minNightlyRate`);
     res.send(response.data);
   } catch (err) {
     res.send(fallback.nightlyRate);
