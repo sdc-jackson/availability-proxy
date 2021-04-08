@@ -4,6 +4,10 @@ const express = require('express');
 const app = express();
 const axios = require('axios');
 const fallback = require('./fallbacks.js');
+let redis = require('redis');
+let client = redis.createClient();
+
+client.on('error', (err) => console.log(err))
 
 app.use('/', express.static('public'));
 app.use('/rooms/:id', express.static('public'));
@@ -84,31 +88,57 @@ app.get('/footer', async (req, res) => {
 });
 
 //***********/ SERVICE FORWARDING /***********//
-
-app.get('/rooms/:id/availableDates', async (req, res) => {
+const availabilityServers = ['50.18.110.200:5001','54.183.77.249:5001']
+let currentAvailabilityServer = 0;
+app.get('/rooms/:id/availableDates', (req, res) => {
   try {
-    const response = await axios.get(`http://localhost:5001/rooms/${req.params.id}/availableDates`);
-    res.send(response.data);
+    client.get(`available${req.params.id}`, (err, results) => {
+      if (err) { throw err }
+      else if (results) {
+        res.status(200).send(results)
+      } else {
+        axios.get(`http://${availabilityServers[currentAvailabilityServer]}/rooms/${req.params.id}/availableDates`)
+          .then(response => {
+            currentAvailabilityServer = (currentAvailabilityServer + 1) % availabilityServers.length;
+            client.set(`available${req.params.id}`, JSON.stringify(response.data));
+            if(response.data) { res.status(201).send(response.data); }
+          })
+      }
+    })
   } catch (err) {
-    res.send(fallback.calendar);
+      res.status(500).send(err);
   }
 });
 app.post('/rooms/:id/reservations', async (req, res) => {
   try {
-    const response = await axios.post(`http://localhost:5001/rooms/${req.params.id}/reservations`, req.body);
+    const response = await axios.post(`http://${availabilityServers[currentAvailabilityServer]}/rooms/${req.params.id}/reservations`, req.body);
+    currentAvailabilityServer = (currentAvailabilityServer + 1) % availabilityServers.length;
     res.send(response.data);
   } catch (err) {
-    res.send(fallback.calendar);
+    res.status(500).send(err);
   }
 });
 
-app.get('/rooms/:id/minNightlyRate', async (req, res) => {
-  try {
-    const response = await axios.get(`http://localhost:5001/rooms/${req.params.id}/minNightlyRate`);
-    res.send(response.data);
-  } catch (err) {
-    res.send(fallback.nightlyRate);
-  }
+app.get('/rooms/:id/minNightlyRate', (req, res) => {
+  client.get(`minNightlyRate${req.params.id}`, (err, results) => {
+    if (err) {
+      console.log('err',err);
+      res.status(500).send(err);
+    }
+    else if (!results) {
+      axios.get(`http://${availabilityServers[currentAvailabilityServer]}/rooms/${req.params.id}/minNightlyRate`)
+        .then(response => {
+          client.set(`minNightlyRate${req.params.id}`, JSON.stringify(response.data),(err) => {
+            if(err) { throw err }
+          })
+          currentAvailabilityServer = (currentAvailabilityServer + 1) % availabilityServers.length;
+          res.status(201).send(response.data)
+        })
+        .catch(err => {
+          res.status(500).send(err)
+        })
+    } else { res.status(200).send(results) }
+  })
 });
 
 app.get('/rooms/:id/summary', async (req, res) => {
