@@ -9,7 +9,7 @@ let client = redis.createClient();
 
 client.on('error', (err) => console.log(err))
 
-app.use('/', express.static('public'));
+app.use('/', express.static('../public'));
 app.use('/rooms/:id', express.static('public'));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
@@ -88,7 +88,7 @@ app.get('/footer', async (req, res) => {
 });
 
 //***********/ SERVICE FORWARDING /***********//
-const availabilityServers = ['50.18.110.200:5001','54.183.77.249:5001']
+
 let currentAvailabilityServer = 0;
 app.get('/rooms/:id/availableDates', (req, res) => {
   try {
@@ -97,9 +97,9 @@ app.get('/rooms/:id/availableDates', (req, res) => {
       else if (results) {
         res.status(200).send(results)
       } else {
-        axios.get(`http://${availabilityServers[currentAvailabilityServer]}/rooms/${req.params.id}/availableDates`)
+        axios.get(`http://${address['availability'][currentAvailabilityServer]}/rooms/${req.params.id}/availableDates`)
           .then(response => {
-            currentAvailabilityServer = (currentAvailabilityServer + 1) % availabilityServers.length;
+            currentAvailabilityServer = (currentAvailabilityServer + 1) % address['availability'].length;
             client.set(`available${req.params.id}`, JSON.stringify(response.data));
             if(response.data) { res.status(201).send(response.data); }
           })
@@ -111,8 +111,8 @@ app.get('/rooms/:id/availableDates', (req, res) => {
 });
 app.post('/rooms/:id/reservations', async (req, res) => {
   try {
-    const response = await axios.post(`http://${availabilityServers[currentAvailabilityServer]}/rooms/${req.params.id}/reservations`, req.body);
-    currentAvailabilityServer = (currentAvailabilityServer + 1) % availabilityServers.length;
+    const response = await axios.post(`http://${address['availability'][currentAvailabilityServer]}/rooms/${req.params.id}/reservations`, req.body);
+    currentAvailabilityServer = (currentAvailabilityServer + 1) % address['availability'].length;
     res.send(response.data);
   } catch (err) {
     res.status(500).send(err);
@@ -126,12 +126,12 @@ app.get('/rooms/:id/minNightlyRate', (req, res) => {
       res.status(500).send(err);
     }
     else if (!results) {
-      axios.get(`http://${availabilityServers[currentAvailabilityServer]}/rooms/${req.params.id}/minNightlyRate`)
+      axios.get(`http://${address['availability'][currentAvailabilityServer]}/rooms/${req.params.id}/minNightlyRate`)
         .then(response => {
           client.set(`minNightlyRate${req.params.id}`, JSON.stringify(response.data),(err) => {
             if(err) { throw err }
           })
-          currentAvailabilityServer = (currentAvailabilityServer + 1) % availabilityServers.length;
+          currentAvailabilityServer = (currentAvailabilityServer + 1) % address['availability'].length;
           res.status(201).send(response.data)
         })
         .catch(err => {
