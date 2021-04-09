@@ -99,7 +99,6 @@ app.get('/rooms/:id/availableDates', (req, res) => {
       } else {
         axios.get(`http://${address['availability']}/rooms/${req.params.id}/availableDates`)
           .then(response => {
-            currentAvailabilityServer = (currentAvailabilityServer + 1) % availabilityServers.length;
             client.set(`available${req.params.id}`, JSON.stringify(response.data));
             if(response.data) { res.status(201).send(response.data); }
           })
