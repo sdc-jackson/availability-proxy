@@ -4,6 +4,7 @@ const express = require('express');
 const app = express();
 const axios = require('axios');
 const fallback = require('./fallbacks.js');
+const address = require('./ipaddresses.js');
 let redis = require('redis');
 let client = redis.createClient();
 
