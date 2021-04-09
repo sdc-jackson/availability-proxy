@@ -24,6 +24,7 @@ coverage
 build/
 dist/
 public/
-
+ipaddresses.js
+newrelic.js
 .env
 
