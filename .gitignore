@@ -27,4 +27,7 @@ public/
 
 .env
 newrelic.js
+.dockerignore
+Dockerfile
+docker-compose.yml
 
